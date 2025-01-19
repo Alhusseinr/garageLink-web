@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "jsx": "react",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "build",
+        "baseUrl": ".",
+        "paths": {
+            "@components/*": ["src/components/*"]
+        }
+    },
+    "include": ["src", "webpack.config.ts"]
+}
