@@ -18,23 +18,32 @@ import { collection, addDoc } from "firebase/firestore";
 const WaitlistForm = () => {
   const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
-  const form = useForm({
-    initialValues: { email: "" },
-    validate: {
-      email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : "Invalid email"),
-    },
-  });
+    const validateEmail = (email: string) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+      };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!validateEmail(email)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+
+      setError("");
+
     try {
       await addDoc(collection(db, "waitlist"), { email });
       setSubmitted(true);
+      setEmail("");
     } catch (error) {
       console.error("Error adding email to wait list: ", error);
+      setError("An error occurred. Please try again later.");
       setSubmitted(false);
+      setEmail("");
     }
   };
 
@@ -127,6 +136,7 @@ const WaitlistForm = () => {
                   placeholder="Enter your email here"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
                 <Button type="submit" fullWidth mt="md">
                   Join the Waitlist
