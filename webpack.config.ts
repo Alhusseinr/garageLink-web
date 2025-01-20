@@ -3,6 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Configuration as WebpackConfiguration } from 'webpack';
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import Dotenv from "dotenv-webpack";
 
 
 interface Configuration extends WebpackConfiguration {
@@ -41,6 +42,12 @@ const config: Configuration = {
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         }),
+        new Dotenv({
+            path: path.resolve(__dirname, '.env'),
+            safe: true,
+            systemvars: true,
+            allowEmptyValues: false
+        })
         // new CopyWebpackPlugin({
         //     patterns: [
         //         { 

@@ -12,9 +12,12 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck } from "@tabler/icons-react";
+import { db } from "../firebseConfig";
+import { collection, addDoc } from "firebase/firestore";
 
 const WaitlistForm = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState("");
 
   const form = useForm({
     initialValues: { email: "" },
@@ -23,15 +26,26 @@ const WaitlistForm = () => {
     },
   });
 
-  const handleSubmit = (values: { email: string }) => {
-    console.log("Waitlist Submission:", values.email);
-    setSubmitted(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await addDoc(collection(db, "waitlist"), { email });
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error adding email to wait list: ", error);
+      setSubmitted(false);
+    }
   };
 
   return (
-    <Container id="waitlist" size="sm" pt='lg'>
+    <Container id="waitlist" size="sm" pt="lg">
       <Stack mb="xl">
-        <Title order={2} mb="md" style={{ textAlign: "center", maxWidth: '100%' }}>
+        <Title
+          order={2}
+          mb="md"
+          style={{ textAlign: "center", maxWidth: "100%" }}
+        >
           What is GarageLink?
         </Title>
         <Text size="lg">
@@ -44,7 +58,13 @@ const WaitlistForm = () => {
       </Stack>
 
       <Stack mb="xl">
-        <Title order={2} mb="md" style={{ textAlign: "center", maxWidth: '100%' }}>Key Features</Title>
+        <Title
+          order={2}
+          mb="md"
+          style={{ textAlign: "center", maxWidth: "100%" }}
+        >
+          Key Features
+        </Title>
         <List
           spacing="md"
           size="lg"
@@ -88,7 +108,11 @@ const WaitlistForm = () => {
       </Stack>
 
       <Stack>
-        <Title order={2} mb="md" style={{ textAlign: "center", maxWidth: '100%' }}>
+        <Title
+          order={2}
+          mb="md"
+          style={{ textAlign: "center", maxWidth: "100%" }}
+        >
           Join Us!
         </Title>
         <Paper withBorder shadow="md" p="xl" radius="md">
@@ -97,10 +121,12 @@ const WaitlistForm = () => {
               <Text size="md" mb="sm" fw={500} style={{ textAlign: "center" }}>
                 Join our waitlist and get exclusive early access!
               </Text>
-              <form onSubmit={form.onSubmit(handleSubmit)}>
+              <form onSubmit={handleSubmit}>
                 <TextInput
+                  type="email"
                   placeholder="Enter your email here"
-                  {...form.getInputProps("email")}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <Button type="submit" fullWidth mt="md">
                   Join the Waitlist
@@ -109,7 +135,8 @@ const WaitlistForm = () => {
             </>
           ) : (
             <Text color="green" size="lg">
-              🎉 Thank you for joining the wait! We'll notify you as soon we launch.
+              🎉 Thank you for joining the wait! We'll notify you as soon we
+              launch.
             </Text>
           )}
         </Paper>
