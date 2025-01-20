@@ -34,11 +34,16 @@ const config: Configuration = {
         test: /\.scss$/,
         use: ["style-loader", "css-loader", "sass-loader"],
       },
+      {
+        test: /\.(ico|png|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html",
+      favicon: path.resolve(__dirname, 'public/favicon.ico'),
     }),
     new Dotenv({
       path: path.resolve(__dirname, ".env"),
